@@ -181,7 +181,7 @@ def show_all():
         cursor.execute("SELECT * FROM tb_product") # Cursor mengeksekusi query untuk select semua column
         show_result = cursor.fetchall() # Fetch semua data
         # Format untuk output
-        print("Daftar Produk:") 
+        print("--- DAFTAR PRODUK ---".center(100)) 
         print("="*100)
         print(f"{'ID':<5} {'Name':<25} {'Categpry':<20} {'Weight':<10} {'Quantity':<10} {'Supplier':<20}") # Membuat table dengan format lebar colomn
         print("="*100)
@@ -250,6 +250,7 @@ def main():
             splr_product = input("Supplier Product: ")
             remove_product(frId_product, nama_product, weig_product, splr_product) # Menjalankan function remove_product dengan format    
         elif user_answer == 4: # Jika user menginput 4
+            clear()
             show_all() # Menjalankan function show_all
         elif user_answer == 5: # Jika user menginput 5
             break # menghentikan function main
