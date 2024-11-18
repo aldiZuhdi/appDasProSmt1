@@ -188,6 +188,11 @@ def show_all():
         for cell in show_result: # looping data sesuai dengan jumlah rows di database
             print(f"{cell[0]:<5} {cell[1]:<25} {cell[2]:<20} {cell[3]:<10} {cell[4]:<10} {cell[5]:<20}") # Membuat table dengan format cell sesuai dengan database
         print("="*100)
+        answer = input("Kembali ke manu? ")
+        if answer:
+            time.sleep(2)
+            clear()
+            main()    
     except ValueError as e: # Jika terdapat error pada try
         print(f"Error: {e}")
     finally: # Jika selesai
@@ -253,14 +258,17 @@ def main():
             clear()
             show_all() # Menjalankan function show_all
         elif user_answer == 5: # Jika user menginput 5
+            time.sleep(2)
+            clear()
             break # menghentikan function main
         else: # Jika jawaban tidak valid
             clear() # Function clear
             print("\033[31mJawaban tidak valid !\033[30m") # Alert keterangan jawaban tidak valid
             clear() # Function clear
 
-clear() # Function clear
-while True: # looping login jika gagal maka akan terus loop sampai meminta agar login berhasil
-    username = input("Username: ")
-    password = getpass.getpass("Password: ")
-    login(username, password) # Menjalankan function login dengan format
+if __name__ == "__main__":
+    clear() # Function clear
+    while True: # looping login jika gagal maka akan terus loop sampai meminta agar login berhasil
+        username = input("Username: ")
+        password = getpass.getpass("Password: ")
+        login(username, password) # Menjalankan function login dengan format
