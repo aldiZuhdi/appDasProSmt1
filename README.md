@@ -24,3 +24,32 @@ Fonts Style:
 3m = Italic fonts
 4m = Underline fonts
 9m = Strikethrough fonts
+
+CREATE DATABASE db_minimarket;
+USE db_minimarket;
+
+CREATE TABLE tb_product (
+id INT(11) AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+category VARCHAR(255) NOT NULL,
+weight INT(11) NOT NULL,
+quantity INT(11) NOT NULL,
+supplier VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE users (
+id INT(11) AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(16) NOT NULL,
+password VARCHAR(16) NOT NULL,
+position VARCHAR(25) NOT NULL
+);
+
+INSERT INTO `users` (`id`, `username`, `password`, `position`) VALUES (NULL, 'admin', 'admin', 'admin');
+
+INSERT INTO tb_product (id)
+VALUES (
+CONCAT(
+CHAR(FLOOR(65 + (RAND() _ 26))), -- Huruf acak (A-Z)
+LPAD(FLOOR(RAND() _ 9999) + 1, 4, '0') -- Nomor acak (1-9999)
+)
+);

@@ -27,6 +27,15 @@
 
 # INSERT INTO `users` (`id`, `username`, `password`, `position`) VALUES (NULL, 'admin', 'admin', 'admin');
 
+# INSERT INTO tb_product (id)
+# VALUES (
+#     CONCAT(
+#         CHAR(FLOOR(65 + (RAND() * 26))),  -- Huruf acak (A-Z)
+#         LPAD(FLOOR(RAND() * 9999) + 1, 4, '0')  -- Nomor acak (1-9999)
+#     )
+# );
+
+
 # Install library MySQL:
 # pip install mysql.connector
 
@@ -266,9 +275,9 @@ def main():
             print("\033[31mJawaban tidak valid !\033[30m") # Alert keterangan jawaban tidak valid
             clear() # Function clear
 
-if __name__ == "__main__":
-    clear() # Function clear
-    while True: # looping login jika gagal maka akan terus loop sampai meminta agar login berhasil
-        username = input("Username: ")
-        password = getpass.getpass("Password: ")
-        login(username, password) # Menjalankan function login dengan format
+# if __name__ == "__main__":
+clear() # Function clear
+while True: # looping login jika gagal maka akan terus loop sampai meminta agar login berhasil
+    username = input("Username: ")
+    password = getpass.getpass("Password: ")
+    login(username, password) # Menjalankan function login dengan format
