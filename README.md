@@ -24,3 +24,6 @@ Fonts Style:
 3m = Italic fonts
 4m = Underline fonts
 9m = Strikethrough fonts
+
+
+Nero12-bot test clone
