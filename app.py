@@ -77,13 +77,13 @@ def login(username, password):
         get_user = cursor.fetchone() # Fetch 1 data dari kolom table
         if get_user: # Jika data berhasil di fetch
             clear() # Function clear
-            print("\n\033[32m\033[1m!--Login Berhasil--!\033[0m\033[30m\n") # Alert keterangan untuk user
+            print("\n\033[32m\033[1m!--Login Berhasil--!\033[0m\033[37m\n") # Alert keterangan untuk user
             time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
             clear() # Function clear
             main()  # Function main
         else: # Jika data yang di fetch tidak cocok
             clear() # Function clear
-            print("\n\033[31m\033[1m!--Login Gagal--!\nusername atau password salah\033[0m\033[30m\n") # Alert keterangan untuk user
+            print("\n\033[31m\033[1m!--Login Gagal--!\nusername atau password salah\033[0m\033[37m\n") # Alert keterangan untuk user
             time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
             clear() # Function clear
     except ValueError as e: # Menampilkan value yang error dari kolom try login
@@ -102,11 +102,11 @@ def add_new(name, category, weight, quantity, supplier):
         if cursor.rowcount == 0: # Jika produk yang ditambahkan belum ada pada column
             cursor.execute("INSERT INTO tb_product (name, category, weight, quantity, supplier) VALUES(%s, %s, %s, %s, %s)", (name, category, weight, quantity, supplier)) # Cursor mengeksekusi query untuk menambahkan produk kedalam database
             db.commit() # Menyimpan perubahan kedalam database
-            print("\n\033[32m\033[1m!--Product Berhasil Ditambahkan--!\033[0m\033[30m\n") # Alert keterangan produk berhasil ditambahkan
+            print("\n\033[32m\033[1m!--Product Berhasil Ditambahkan--!\033[0m\033[37m\n") # Alert keterangan produk berhasil ditambahkan
             time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks berikutnya
             clear() # Function clear
         else: # Jika Produk sudah ada dalam database
-            print(f"\033[31m\033[1m!--Gagal Menambah Product Baru--!\nProduct Sudah Ada\033[0m\033[30m") # Alert Keterangan produk gagal ditambahkan
+            print(f"\033[31m\033[1m!--Gagal Menambah Product Baru--!\nProduct Sudah Ada\033[0m\033[37m") # Alert Keterangan produk gagal ditambahkan
             time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks berikutnya
             clear() # Function clear
             main() # Function main
@@ -114,6 +114,7 @@ def add_new(name, category, weight, quantity, supplier):
         print(f"Error: {e}") 
         time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
         clear() # Function clear
+        main()
     finally: # Jika sudah selesai
         cursor.close() # Menutup cursor
         db.close() # Menutup koneksi kedatabase untuk menghemat memori
@@ -128,11 +129,11 @@ def update_qty(id, name, quantity, weight, supplier):
         if select: # Jika select true
             cursor.execute("UPDATE tb_product SET quantity = quantity + %s WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (quantity, id, name, weight, supplier)) # Cursor mengeksekusi query untuk + quantity 
             db.commit() # Menyimpan perubahan kedalam database
-            print("\n\033[32m\033[1m!--Berhasil Menambahkan Jumlah Product--!\033[0m\033[30m\n") # Alert keterangan berhasil menambahkan jumlah produk
+            print("\n\033[32m\033[1m!--Berhasil Menambahkan Jumlah Product--!\033[0m\033[37m\n") # Alert keterangan berhasil menambahkan jumlah produk
             time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
             clear() # Function clear
         else: # Jika select false
-            print(f"\n\033[31m\033[1m!--Gagal Menambah Jumlah Product--!\033[0m\033[30m\n") # Alert keterangan gagal menambah jumlah produk
+            print(f"\n\033[31m\033[1m!--Gagal Menambah Jumlah Product--!\033[0m\033[37m\n") # Alert keterangan gagal menambah jumlah produk
             time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
             clear() # Function clear
     except ValueError as e: # Jika terdapat error pada try
@@ -151,11 +152,11 @@ def reduce_qty(id, name, quantity, weight, supplier):
         if select: # Jika select true
             cursor.execute("UPDATE tb_product SET quantity = quantity - %s WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (quantity, id, name, weight, supplier)) # Cursor mengeksekusi query untuk mengurangi quantity
             db.commit() # Menyimpan perubahan kedalam SQL
-            print("\n\033[32m\033[1m!--Berhasil Mengurangi Jumlah Product--!\033[0m\033[30m\n") # Alert keterangan berhasil mengurangi jumlah produk
+            print("\n\033[32m\033[1m!--Berhasil Mengurangi Jumlah Product--!\033[0m\033[37m\n") # Alert keterangan berhasil mengurangi jumlah produk
             time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
             clear() # Function clear
         else: # Jika select false
-            print(f"\n\033[31m\033[1m!--Gagal Mengurangi Jumlah Product--!\033[0m\033[30m\n") # Alert keterangan gagal mengurangi jumlah produk
+            print(f"\n\033[31m\033[1m!--Gagal Mengurangi Jumlah Product--!\033[0m\033[37m\n") # Alert keterangan gagal mengurangi jumlah produk
             time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
             clear() # Function clear
     except ValueError as e: # Jika terdapat error pada try
@@ -169,15 +170,20 @@ def remove_product(id, name, weight, supplier):
     try: # Mencoba mengeksekusi
         db = db_connection() # Mendeklarasikan variable untuk function db_connection
         cursor = db.cursor() # Membuat cursor pada SQL
-        cursor.execute("DELETE FROM tb_product WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (id, name, weight, supplier)) # Cursor mengeksekusi query untuk menghapus produk sesuai dengan id, name, weight, dan supplier
-        db.commit() # Menyimpan perubahan kedalam SQL
-        print("\n\033[32m\033[1m!--Product berhasil dihapus--!\033[0m\033[30m\n") # Alert keterangan produk berhasil dihapus
-        time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
-        clear() # Function clear
+        cursor.execute("SELECT * FROM tb_product WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (id, name, weight, supplier)) # Cursor mengeksekusi query untuk menghapus produk sesuai dengan id, name, weight, dan supplier
+        select = cursor.fetchone() # Fetch data yang sesuai
+        if select:
+            cursor.execute("DELETE FROM tb_product WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (id, name, weight, supplier))
+            db.commit()
+            print("\n\033[32m\033[1m!--Product berhasil dihapus--!\033[0m\033[37m\n") # Alert keterangan produk berhasil dihapus
+            time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
+            clear() # Function clear
+        else:
+            print(f"\033[31m\033[1m!--Gagal Menghapus Product--!\n\033[0m\033[37m") # Alert keterangan gagal menghapus produk
+            time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
+            clear() # Function clear
     except ValueError as e: # Jika terdapat error pada try
-        print(f"\033[31m\033[1m!--Gagal Menghapus Product--!\nError: {e}\033[0m\033[30m") # Alert keterangan gagal menghapus produk
-        time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
-        clear() # Function clear
+        print(f"Error: {e}")
     finally: # Jika selesai
         cursor.close() # Menutup cursor
         db.close() # Menutup koneksi untuk menghemat memori
@@ -211,7 +217,7 @@ def show_all():
 # Function main(utama)
 def main():
     while True: # Jika login berhasil / True
-        print("\n\033[35m\033[1mSelamat Datang Di Minimarket\033[0m\033[30m\n")
+        print("\n\033[35m\033[1mSelamat Datang Di Minimarket\033[0m\033[37m\n")
         print("1. Tambah Product Baru")
         print("2. Update Jumlah Product")
         print("3. Hapus Product")
@@ -229,8 +235,8 @@ def main():
             add_new(nama_product, catg_product, weig_product, qtyy_product, splr_product) # Menjalankan function add_new dengan format 
         elif user_answer == 2: # Jika user menginput 2
             clear() # Function clear
-            print("1. Tambahi Jumlah Product: ")
-            print("2. Kurangi Jumlah Product: ")
+            print("1. Tambahi Jumlah Product ")
+            print("2. Kurangi Jumlah Product ")
             upd_user_answer = int(input("Masukkan pilihan kamu(1/2): ")) # Variable untuk menampung jawaban user
             if upd_user_answer == 1: # Jika user menginput 1
                 clear() # Function clear
@@ -252,7 +258,7 @@ def main():
                 reduce_qty(frId_product, nama_product, qtyy_product, weig_product, splr_product) # Menjalankan function reduce_qty dengan format
             else: # Jika jawaban tidak valid
                 clear() # Clear
-                print("\033[31mJawaban tidak valid !\033[30m") # Alert keterangan jawaban tidak valid
+                print("\033[31mJawaban tidak valid !\033[37m") # Alert keterangan jawaban tidak valid
                 time.sleep(2) # Membuat delay selama 2 detik sebelum mengeksekusi sintaks selanjutnya
                 clear() # Function clear
         elif user_answer == 3: # Jika user menginput 3
@@ -267,12 +273,14 @@ def main():
             clear()
             show_all() # Menjalankan function show_all
         elif user_answer == 5: # Jika user menginput 5
+            clear()
+            print("\033[31mKeluar dari Aplikasi !\033[37m")
             time.sleep(2)
             clear()
             break # menghentikan function main
         else: # Jika jawaban tidak valid
             clear() # Function clear
-            print("\033[31mJawaban tidak valid !\033[30m") # Alert keterangan jawaban tidak valid
+            print("\033[31mJawaban tidak valid !\033[37m") # Alert keterangan jawaban tidak valid
             clear() # Function clear
 
 # if __name__ == "__main__":

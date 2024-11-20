@@ -24,10 +24,3 @@ Fonts Style:
 3m = Italic fonts
 4m = Underline fonts
 9m = Strikethrough fonts
-
-Carok MADURA
-Nero12-bot test clone
-
-GITHUB ANJING
-pepek
-azizboss
