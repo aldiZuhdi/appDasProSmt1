@@ -170,7 +170,7 @@ def remove_product(id, name, weight, supplier):
     try: # Mencoba mengeksekusi
         db = db_connection() # Mendeklarasikan variable untuk function db_connection
         cursor = db.cursor() # Membuat cursor pada SQL
-        cursor.execute("SELECT * FROM tb_product WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (id, name, weight, supplier)) # Cursor mengeksekusi query untuk menghapus produk sesuai dengan id, name, weight, dan supplier
+        cursor.execute("SELECT * FROM tb_product WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (id, name, weight, supplier))
         select = cursor.fetchone() # Fetch data yang sesuai
         if select:
             cursor.execute("DELETE FROM tb_product WHERE id = %s AND name = %s AND weight = %s AND supplier = %s", (id, name, weight, supplier))
@@ -196,6 +196,7 @@ def show_all():
         cursor.execute("SELECT * FROM tb_product") # Cursor mengeksekusi query untuk select semua column
         show_result = cursor.fetchall() # Fetch semua data
         # Format untuk output
+        print("="*100)
         print("--- DAFTAR PRODUK ---".center(100)) 
         print("="*100)
         print(f"{'ID':<5} {'Name':<25} {'Categpry':<20} {'Weight':<10} {'Quantity':<10} {'Supplier':<20}") # Membuat table dengan format lebar colomn
