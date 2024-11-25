@@ -44,6 +44,7 @@ import mysql.connector # library untuk menghubungkan kedalam database
 import time # Library untuk waktu
 import getpass # Library untuk password
 import os # Library untuk berinteraksi dengan OS
+import sys # library untuk berinteraksi dengan interpreter python
 
 # Function untuk clear terminal
 def clear(): 
@@ -278,7 +279,7 @@ def main():
             print("\033[31mKeluar dari Aplikasi !\033[37m")
             time.sleep(2)
             clear()
-            break # menghentikan function main
+            sys.exit() # menghentikan function main
         else: # Jika jawaban tidak valid
             clear() # Function clear
             print("\033[31mJawaban tidak valid !\033[37m") # Alert keterangan jawaban tidak valid
