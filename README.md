@@ -52,3 +52,26 @@ PULL:
 
 1. git init
 2. git pull origin main
+
+def login(username, password):
+try: # Mencoba untuk fetch data sesuai dengan yang diinput oleh user (jika data True)
+db = db_connection() # Mendeklarasikan variable untuk function db_connection
+cursor = db.cursor() # Membuat cursor kedalam SQL
+cursor.execute("SELECT \* FROM users WHERE username = %s AND password = %s", (username, password)) # Cursor mengeksekusi query untuk memilih column yang sesuai dengan yang diinput user berdasarkan parameter function
+get_user = cursor.fetchone() # Fetch 1 data dari kolom table
+if get_user: # Jika data berhasil di fetch
+clear() # Function clear
+print("\n\033[32m\033[1m!--Login Berhasil--!\033[0m\033[37m\n") # Alert keterangan untuk user
+time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
+clear() # Function clear
+main() # Function main
+else: # Jika data yang di fetch tidak cocok
+clear() # Function clear
+print("\n\033[31m\033[1m!--Login Gagal--!\nusername atau password salah\033[0m\033[37m\n") # Alert keterangan untuk user
+time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
+clear() # Function clear
+except ValueError as e: # Menampilkan value yang error dari kolom try login
+print(f"Error: {e}")  
+ finally: # setelah selesai, tutup koneksi dan kursor untuk menghemat RAM
+cursor.close() # Menutup cursor
+db.close() # Menutup koneksi untuk menghemat memori

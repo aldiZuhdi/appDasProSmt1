@@ -46,6 +46,24 @@ import getpass # Library untuk password
 import os # Library untuk berinteraksi dengan OS
 import sys # library untuk berinteraksi dengan interpreter python
 
+users = [ #list untuk menampung user login
+    {
+        'username': 'admin',
+        'password': 'admin',
+        'position': 'admin'
+    },  
+    {
+        'username': 'aldi',
+        'password': 'aldi',
+        'position': 'user'
+    },
+    {
+        'username': 'budi',
+        'password': 'budi',
+        'position': 'user'
+    }
+]
+
 # Function untuk clear terminal
 def clear(): 
     if os.name == 'nt':  # Identitas OS windows
@@ -71,27 +89,24 @@ def db_connection():
         
 # Function untuk user login
 def login(username, password): 
-    try: # Mencoba untuk fetch data sesuai dengan yang diinput oleh user (jika data True)
-        db = db_connection() # Mendeklarasikan variable untuk function db_connection
-        cursor = db.cursor() # Membuat cursor kedalam SQL
-        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password)) # Cursor mengeksekusi query untuk memilih column yang sesuai dengan yang diinput user berdasarkan parameter function
-        get_user = cursor.fetchone() # Fetch 1 data dari kolom table
-        if get_user: # Jika data berhasil di fetch
-            clear() # Function clear
-            print("\n\033[32m\033[1m!--Login Berhasil--!\033[0m\033[37m\n") # Alert keterangan untuk user
-            time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
-            clear() # Function clear
-            main()  # Function main
-        else: # Jika data yang di fetch tidak cocok
-            clear() # Function clear
-            print("\n\033[31m\033[1m!--Login Gagal--!\nusername atau password salah\033[0m\033[37m\n") # Alert keterangan untuk user
-            time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
-            clear() # Function clear
-    except ValueError as e: # Menampilkan value yang error dari kolom try login
-        print(f"Error: {e}")   
-    finally: # setelah selesai, tutup koneksi dan kursor untuk menghemat RAM
-        cursor.close() # Menutup cursor 
-        db.close() # Menutup koneksi untuk menghemat memori
+    try:
+        for user in users:
+            if user['username'] == username and user['password'] == password:
+                clear()
+                print("\n\033[32m\033[1m!--Login Berhasil--!\033[0m\033[37m\n") # Alert keterangan untuk user
+                time.sleep(2)
+                clear()
+                main()
+            else:
+                clear()
+                print("\n\033[31m\033[1m!--Login Gagal--!\nusername atau password salah\033[0m\033[37m\n") # Alert keterangan untuk user
+                time.sleep(1) # Membuat delay waktu selama 1 detik kepada terminal sebelum mengeksekusi sintaks selanjutnya
+                clear() # Function clear
+    except ValueError as e:
+        print(f"Error: {e}")
+        time.sleep(2)
+        clear()
+        main()
 
 # Function untuk menambah product baru
 def add_new(name, category, weight, quantity, supplier):
@@ -205,7 +220,7 @@ def show_all():
         for cell in show_result: # looping data sesuai dengan jumlah rows di database
             print(f"{cell[0]:<5} {cell[1]:<25} {cell[2]:<20} {cell[3]:<10} {cell[4]:<10} {cell[5]:<20}") # Membuat table dengan format cell sesuai dengan database
         print("="*100)
-        answer = input("Kembali ke manu? ")
+        answer = input("Kembali ke menu? ")
         if answer:
             time.sleep(2)
             clear()
@@ -285,9 +300,9 @@ def main():
             print("\033[31mJawaban tidak valid !\033[37m") # Alert keterangan jawaban tidak valid
             clear() # Function clear
 
-# if __name__ == "__main__":
-clear() # Function clear
-while True: # looping login jika gagal maka akan terus loop sampai meminta agar login berhasil
-    username = input("Username: ")
-    password = getpass.getpass("Password: ")
-    login(username, password) # Menjalankan function login dengan format
+if __name__ == "__main__":
+    clear() # Function clear
+    while True: # looping login jika gagal maka akan terus loop sampai meminta agar login berhasil
+        username = input("Username: ")
+        password = getpass.getpass("Password: ")
+        login(username, password) # Menjalankan function login dengan format

@@ -1,6 +1,20 @@
 import time
-from app import db_connection, clear
+import mysql.connector
+# from app import db_connection, clear
 
+def db_connection():
+    try: # Mencoba membuat koneksi kedalam database
+        # Membuat koneksi dengan format:
+        return mysql.connector.connect(  
+            host = 'localhost', 
+            user = 'root', 
+            password = '', 
+            database = 'db_minimarket' 
+        )
+    # Sintaks yang berjalan jika terjadi error pada kode try  
+    except mysql.connector.Error as e: # Menampilkan bagian yang error dari try koneksi ke MySQL
+        print(f"Error: {e}") 
+        time.sleep(5) # Membuat delay selama 5 detik sebelum mengeskekusi sintaks selanjutnya
 def main(username, password):
     try:
         db = db_connection()
@@ -13,7 +27,6 @@ def main(username, password):
             db.commit()
             print("Akses berhasil ditambahkan !")
             time.sleep(2)
-            clear()
         else:
             print("Username atau password sudah digunakan, silahkan buat yang lain")
     except ValueError as e:
@@ -21,7 +34,6 @@ def main(username, password):
     finally:
         db.close()
         cursor.close()
-                
 username = input("Silahkan buat username: ")
 password = input("Silahkan buat password: ")
-main(username, password)
+main(username, password)            
