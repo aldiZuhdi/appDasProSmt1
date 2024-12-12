@@ -113,11 +113,6 @@ def show_by_lowStok():
             return [''] * len(row)
     style_low_stok = tb_product.style.apply(low_stok, axis = 1)
     return style_low_stok
-def not_result(name):
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM tb_product WHERE name = %s", (name,))
-    result = cursor.fetchall()
-    pd.DataFrame(result, columns=["ID", "NAME", "CATEGORY", "WEIGHT", "QUANTITY", "SUPPLIER"]) 
     
 def loginVerification(username, password):
     for user in users:
