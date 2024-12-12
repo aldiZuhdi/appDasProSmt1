@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="2w0YJS_ZWguaededGHnA" name="Page-1">
-        <mxGraphModel dx="1422" dy="1058" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1093" dy="595" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -27,7 +27,7 @@
                 <mxCell id="112" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontSize=12;fillColor=#60a917;strokeColor=#2D7600;" parent="1" source="104" target="111" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="104" value="memeriksa apakah data ada dalam database?" style="rhombus;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="104" value="Memeriksa apakah data login ada dalam list?" style="rhombus;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="346" y="120" width="80" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="108" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontSize=12;fillColor=#60a917;strokeColor=#2D7600;" parent="1" source="105" target="104" edge="1">
@@ -42,7 +42,7 @@
                 <mxCell id="115" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontSize=12;fillColor=#60a917;strokeColor=#2D7600;" parent="1" source="111" target="114" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="111" value="Proses function main" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="111" value="Dashboard App" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="466" y="130" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="113" value="Ada" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontFamily=Times New Roman;fontColor=#66CC00;" parent="1" vertex="1">
@@ -98,7 +98,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="198" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" edge="1" parent="1" source="116" target="197">
+                <mxCell id="198" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" parent="1" source="116" target="197" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="800" y="690"/>
@@ -338,16 +338,16 @@
                 <mxCell id="192" value="User input" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Times New Roman;fontSize=12;fontColor=#FFFFFF;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="586" y="399" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="201" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" edge="1" parent="1" source="197" target="200">
+                <mxCell id="201" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" parent="1" source="197" target="200" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="197" value="Exit" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="197" value="Exit" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="560" y="660" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="200" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="200" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="365" y="650" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="352" value="5 = valid" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontFamily=Times New Roman;fontColor=#66CC00;" vertex="1" parent="1">
+                <mxCell id="352" value="5 = valid" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontFamily=Times New Roman;fontColor=#66CC00;" parent="1" vertex="1">
                     <mxGeometry x="741" y="305" width="70" height="30" as="geometry"/>
                 </mxCell>
             </root>
