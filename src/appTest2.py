@@ -1,96 +1,275 @@
+# pip install mysql.connector
+# pip install streamlit
+# pip install pandas
+
+# import library
 import streamlit as web
-import time
-import pandas as pd
-import mysql.connector
+from src.connection import connToDb 
+from src.mysql_query import add_new, update_qty, reduce_qty, remove_product, show_all, show_by_name, loginVerification, show_by_category, show_by_lowStok
+import datetime
 
-# Fungsi untuk koneksi ke database
-def connToDb():
-    return mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='',
-        database='db_minimarket'
-    )
+# Initialize variables
+conn = connToDb() # Koneksi kedalam database
+current_datetime = datetime.datetime.now() # Setup tanggal dan waktu
+addOn = current_datetime.strftime('%Y-%m-%d %H:%M:%S') # Format tanggal dan waktu
 
-# Koneksi ke database
-conn = connToDb()
 
-# Data pengguna dummy
-users = [
-    {
-        "username": "admin",
-        "password": "admin",
-        "position": "admin"
-    },
-    {
-        "username": "aldi",
-        "password": "aldi",
-        "position": "user"
-    }
-]
+# FRONT END
 
-# Fungsi untuk login dan menuju dashboard
-def loginQuery(username, password):
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
-    select = cursor.fetchone()
-    if select:
-        # Jika login berhasil, set status login di session_state
-        web.session_state.logged_in = True
-        web.session_state.username = username
-        dashboard()
-    else:
-        web.error("Username atau Password salah!")
+# Check user in session state
+if "logged_in" not in web.session_state:
+    web.session_state.logged_in = False
+    web.session_state.username = ""
 
-# Fungsi untuk registrasi pengguna
-def registerQuery(username, password):
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-    cursor.fetchall()
-    if cursor.rowcount == 0:
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
-        conn.commit()
-        web.success("Registrasi berhasil!")
-    else:
-        web.error("Username sudah digunakan, silahkan pilih username yang lain.")
-
-# Form untuk registrasi
-def registerForm():
-    username = web.text_input("Username:")
-    password = web.text_input("Password:")
-    if web.button("Register"):
-        registerQuery(username, password)
-
-# Form untuk login
-def loginForm():
-    # Mengecek apakah user sudah login
-    if 'logged_in' in web.session_state and web.session_state.logged_in:
-        # Jika sudah login, langsung tampilkan dashboard
-        dashboard()
-        return
-    
-    username = web.text_input("Buat username:")
-    password = web.text_input("Buat password:", type="password")
-    web.text("Tidak memiliki akun?")
-    
-    if web.button("Register Now"):
-        registerForm()
-
+# If login data is available # Make user input form login
+if not web.session_state.logged_in:
+    web.title("Silahkan Login")
+    username = web.text_input("Username:", placeholder = "Masukkan username", autocomplete = "off")
+    password = web.text_input("Password:", placeholder = "Masukkan password", type = "password", autocomplete = "off")
+    # If button onClick
     if web.button("Login"):
-        loginQuery(username, password)
+        # If text_input is not empty
+        if username and password:
+            if loginVerification(username, password):
+                web.session_state.logged_in = True
+                web.session_state.username = username
+                web.success("Berhasil Login! tekan sekali lagi untuk masuk")
+            else:
+                web.error("username atau password salah")
+        else:
+            web.error("Username dan Password harus diisi!")
 
-# Halaman dashboard
-def dashboard():
-    web.title("Dashboard")
-    if 'username' in web.session_state:
-        web.write(f"Selamat datang, {web.session_state.username}!")
-    
-    # Tombol Logout
-    if web.button("Logout"):
-        web.session_state.logged_in = False
-        web.session_state.username = None
-        web.experimental_rerun()  # Meng-refresh halaman untuk kembali ke form login
-
-# Program utama
-if __name__ == "__main__":
-    loginForm()
+# Dashboard App
+else:
+    web.title("STOK BARANG AGEN PAK MAHMUD")
+    search = web.selectbox("Cari berdasarkan:", ["Beranda", "Berdasarkan nama", "Berdasarkan kategori", "Berdasarkan stok hampir habis"])
+    if search == "Berdasarkan nama":
+        searchBar = web.text_input("Cari nama produk:", autocomplete = "off", placeholder = "Cari nama produk sesuai dengan kolom NAME pada tabel")
+        if searchBar:
+            sbn_result = show_by_name(searchBar)
+            if sbn_result:
+                web.dataframe(sbn_result)
+        else:
+            sa = show_all()
+            web.dataframe(sa)
+        if web.sidebar.button("Logout"):
+            web.session_state.logged_in = False
+            web.session_state.username = ""
+            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+        web.sidebar.title(f"Halo, {web.session_state.username}")
+        selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
+        if selectBox == "Tambah Produk Baru":
+            web.sidebar.title("Tambah Produk Baru")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            category = web.sidebar.selectbox("Kategori Produk", ["Bumbu dapur", "Bahan Pokok", "Minuman Kemasan/Sachet", "Makanan ringan", "Perlengkapan mandi/mencuci", "Perlengkapan rumah tangga", "Kebutuhan lainnya"])
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Tambahkan"):
+                if name and category and weight and quantity and supplier:
+                    add_new(name, category, weight, quantity, supplier, addOn, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Tambah Jumlah Produk":
+            web.sidebar.title("Menambah Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Tambah Qty"):
+                if id and quantity:
+                    update_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Kurang Jumlah Produk":
+            web.sidebar.title("Mengurangi Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Kurangi Qty"):
+                if id and quantity:
+                    reduce_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Hapus Produk":
+            web.sidebar.title("Hapus Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Hapus"):
+                if id and name and weight and supplier:
+                    remove_product(id, name, weight, supplier)
+                else:
+                    web.error("Form tidak boleh kosong!")
+        
+    elif search == "Berdasarkan kategori":
+        searchBar = web.selectbox("Cari kategori produk", ["Bumbu dapur", "Bahan Pokok", "Minuman Kemasan/Sachet", "Makanan ringan", "Perlengkapan mandi/mencuci", "Perlengkapan rumah tangga", "Kebutuhan lainnya"])
+        web.title("DATA PRODUK KATEGORI")
+        if searchBar:
+            sbk_result = show_by_category(searchBar)
+            if sbk_result is not None:
+                web.dataframe(sbk_result)
+        if web.sidebar.button("Logout"):
+            web.session_state.logged_in = False
+            web.session_state.username = ""
+            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+        web.sidebar.title(f"Halo, {web.session_state.username}")
+        selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
+        if selectBox == "Tambah Produk Baru":
+            web.sidebar.title("Tambah Produk Baru")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            category = web.sidebar.selectbox("Kategori Produk", ["Bumbu dapur", "Bahan Pokok", "Minuman Kemasan/Sachet", "Makanan ringan", "Perlengkapan mandi/mencuci", "Perlengkapan rumah tangga", "Kebutuhan lainnya"])
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Tambahkan"):
+                if name and category and weight and quantity and supplier:
+                    add_new(name, category, weight, quantity, supplier, addOn, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Tambah Jumlah Produk":
+            web.sidebar.title("Menambah Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Tambah Qty"):
+                if id and quantity:
+                    update_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Kurang Jumlah Produk":
+            web.sidebar.title("Mengurangi Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Kurangi Qty"):
+                if id and quantity:
+                    reduce_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Hapus Produk":
+            web.sidebar.title("Hapus Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Hapus"):
+                if id and name and weight and supplier:
+                    remove_product(id, name, weight, supplier)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+    elif search == "Berdasarkan stok hampir habis":
+        web.title("DATA PRODUK LOW STOK")
+        sbls_result = show_by_lowStok()
+        web.dataframe(sbls_result)
+        if web.sidebar.button("Logout"):
+            web.session_state.logged_in = False
+            web.session_state.username = ""
+            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+        web.sidebar.title(f"Halo, {web.session_state.username}")
+        selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
+        if selectBox == "Tambah Produk Baru":
+            web.sidebar.title("Tambah Produk Baru")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            category = web.sidebar.selectbox("Kategori Produk", ["Bumbu dapur", "Bahan Pokok", "Minuman Kemasan/Sachet", "Makanan ringan", "Perlengkapan mandi/mencuci", "Perlengkapan rumah tangga", "Kebutuhan lainnya"])
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Tambahkan"):
+                if name and category and weight and quantity and supplier:
+                    add_new(name, category, weight, quantity, supplier, addOn, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Tambah Jumlah Produk":
+            web.sidebar.title("Menambah Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Tambah Qty"):
+                if id and quantity:
+                    update_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Kurang Jumlah Produk":
+            web.sidebar.title("Mengurangi Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Kurangi Qty"):
+                if id and quantity:
+                    reduce_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Hapus Produk":
+            web.sidebar.title("Hapus Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Hapus"):
+                if id and name and weight and supplier:
+                    remove_product(id, name, weight, supplier)
+                else:
+                    web.error("Form tidak boleh kosong!")
+    # searchBar = web.text_input("Cari nama produk:", autocomplete = "off", placeholder = "Cari nama produk sesuai dengan kolom NAME pada tabel")
+    # if searchBar:
+    #     sbn_result = show_by_name(searchBar)
+    #     if sbn_result is not None:
+    #         web.dataframe(sbn_result)
+    else:
+        web.subheader("Data Produk")
+        sa_result = show_all()
+        web.dataframe(sa_result) 
+        if web.sidebar.button("Logout"):
+            web.session_state.logged_in = False
+            web.session_state.username = ""
+            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+        web.sidebar.title(f"Halo, {web.session_state.username}")
+        selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
+        if selectBox == "Tambah Produk Baru":
+            web.sidebar.title("Tambah Produk Baru")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            category = web.sidebar.selectbox("Kategori Produk", ["Bumbu dapur", "Bahan Pokok", "Minuman Kemasan/Sachet", "Makanan ringan", "Perlengkapan mandi/mencuci", "Perlengkapan rumah tangga", "Kebutuhan lainnya"])
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Tambahkan"):
+                if name and category and weight and quantity and supplier:
+                    add_new(name, category, weight, quantity, supplier, addOn, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+        elif selectBox == "Tambah Jumlah Produk":
+            web.sidebar.title("Menambah Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Tambah Qty"):
+                if id and quantity:
+                    update_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                
+        elif selectBox == "Kurang Jumlah Produk":
+            web.sidebar.title("Mengurangi Jumlah Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
+            if web.sidebar.button("Kurangi Qty"):
+                if id and quantity:
+                    reduce_qty(id, quantity, addOn)
+                else:
+                    web.error("Form tidak boleh kosong!")
+                    
+        elif selectBox == "Hapus Produk":
+            web.sidebar.title("Hapus Produk")
+            id = web.sidebar.text_input("ID Produk", autocomplete = "off")
+            name = web.sidebar.text_input("Nama Produk", autocomplete = "off")
+            weight = web.sidebar.text_input("Berat Produk", autocomplete = "off")
+            supplier = web.sidebar.text_input("Supplier", autocomplete = "off")
+            if web.sidebar.button("Hapus"):
+                if id and name and weight and supplier:
+                    remove_product(id, name, weight, supplier)
+                else:
+                    web.error("Form tidak boleh kosong!")
