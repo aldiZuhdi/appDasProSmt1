@@ -7,6 +7,7 @@ import streamlit as web
 from src.connection import connToDb 
 from src.mysql_query import add_new, update_qty, reduce_qty, remove_product, show_all, show_by_name, loginVerification, show_by_category, show_by_lowStok
 import datetime
+import time
 
 # Initialize variables
 conn = connToDb() # Koneksi kedalam database
@@ -15,7 +16,6 @@ addOn = current_datetime.strftime('%Y-%m-%d %H:%M:%S') # Format tanggal dan wakt
 
 
 # FRONT END
-
 # Check user in session state
 if "logged_in" not in web.session_state:
     web.session_state.logged_in = False
@@ -33,7 +33,9 @@ if not web.session_state.logged_in:
             if loginVerification(username, password):
                 web.session_state.logged_in = True
                 web.session_state.username = username
-                web.success("Berhasil Login! tekan sekali lagi untuk masuk")
+                web.success("Berhasil Login!")
+                time.sleep(1)
+                web.rerun()
             else:
                 web.error("username atau password salah")
         else:
@@ -55,7 +57,9 @@ else:
         if web.sidebar.button("Logout"):
             web.session_state.logged_in = False
             web.session_state.username = ""
-            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+            web.sidebar.success("Berhasil Logout!")
+            time.sleep(1)
+            web.rerun()
         web.sidebar.title(f"Halo, {web.session_state.username}")
         selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
         if selectBox == "Tambah Produk Baru":
@@ -113,7 +117,9 @@ else:
         if web.sidebar.button("Logout"):
             web.session_state.logged_in = False
             web.session_state.username = ""
-            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+            web.sidebar.success("Berhasil Logout!")
+            time.sleep(1)
+            web.rerun()
         web.sidebar.title(f"Halo, {web.session_state.username}")
         selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
         if selectBox == "Tambah Produk Baru":
@@ -168,7 +174,9 @@ else:
         if web.sidebar.button("Logout"):
             web.session_state.logged_in = False
             web.session_state.username = ""
-            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+            web.sidebar.success("Berhasil Logout!")
+            time.sleep(1)
+            web.rerun()
         web.sidebar.title(f"Halo, {web.session_state.username}")
         selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
         if selectBox == "Tambah Produk Baru":
@@ -200,7 +208,7 @@ else:
             quantity = web.sidebar.text_input("Jumlah Produk (pcs)", autocomplete = "off")
             if web.sidebar.button("Kurangi Qty"):
                 if id and quantity:
-                    reduce_qty(id, quantity)
+                    reduce_qty(id, quantity, addOn)
                 else:
                     web.error("Form tidak boleh kosong!")
                     
@@ -227,7 +235,9 @@ else:
         if web.sidebar.button("Logout"):
             web.session_state.logged_in = False
             web.session_state.username = ""
-            web.sidebar.success("Berhasil Logout! tekan sekali lagi untuk keluar")
+            web.sidebar.success("Berhasil Logout!")
+            time.sleep(1)
+            web.rerun()
         web.sidebar.title(f"Halo, {web.session_state.username}")
         selectBox = web.sidebar.selectbox("Lakukan sesuatu:", ["Tambah Produk Baru", "Tambah Jumlah Produk", "Kurang Jumlah Produk", "Hapus Produk"], index = 0)
         if selectBox == "Tambah Produk Baru":
