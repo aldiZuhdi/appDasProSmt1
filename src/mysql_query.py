@@ -129,7 +129,7 @@ def SQLlogin(username, password):
     fetch = cursor.fetchone()
     if fetch:
         web.success("Login Berhasil")
-        web.experimental_rerun()
+        web.rerun()
     else:
         web.error("Username atau Password Salah")
     
